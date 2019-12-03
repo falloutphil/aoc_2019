@@ -7,6 +7,7 @@
 
 (setv moves (lfor move-set (-> "input.txt" open .read .splitlines) (.split move-set ",")))
 
+;; This is a mess - we should use object state or ordered dicts, not both!
 (defn make-add-move []
   (setv len 0)
   (fn [new-move-str acc-move-dict]
@@ -56,3 +57,7 @@
 (print (min manhattan))
 
 ;; Part Two
+
+(setv wire-length (ap-map (+ (get first-dict it) (get second-dict it)) crossing-points))
+
+(print (min wire-length))
