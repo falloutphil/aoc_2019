@@ -16,16 +16,20 @@
     (setv last-move (-> acc-move-dict reversed next))
     (cond [(= dir "R")
            (lfor step (range 1 (+ dis 1))
-                 (assoc acc-move-dict (Move (+ last-move.x step) last-move.y) (+ len step)))]
+                 (if-not (in (Move (+ last-move.x step) last-move.y) acc-move-dict)
+                         (assoc acc-move-dict (Move (+ last-move.x step) last-move.y) (+ len step))))]
           [(= dir "L")
            (lfor step (range 1 (+ dis 1))
-                 (assoc acc-move-dict (Move (- last-move.x step) last-move.y) (+ len step)))]
+                 (if-not (in (Move (- last-move.x step) last-move.y) acc-move-dict)
+                         (assoc acc-move-dict (Move (- last-move.x step) last-move.y) (+ len step))))]
           [(= dir "U")
            (lfor step (range 1 (+ dis 1))
-                 (assoc acc-move-dict (Move last-move.x (+ last-move.y step)) (+ len step)))]
+                 (if-not (in (Move last-move.x (+ last-move.y step)) acc-move-dict)
+                         (assoc acc-move-dict (Move last-move.x (+ last-move.y step)) (+ len step))))]
           [(= dir "D")
            (lfor step (range 1 (+ dis 1))
-                 (assoc acc-move-dict (Move last-move.x (- last-move.y step)) (+ len step)))]
+                 (if-not (in (Move last-move.x (+ last-move.y step)) acc-move-dict)
+                         (assoc acc-move-dict (Move last-move.x (- last-move.y step)) (+ len step))))]
           [True (print (+ "Bad Move: " dir))])
     (+= len dis)
     (return acc-move-dict)))
