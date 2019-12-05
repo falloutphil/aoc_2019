@@ -1,10 +1,13 @@
 #!/usr/bin/env hy
 
 (import [collections [Counter]])
+(import [itertools [tee]])
 (require [hy.extra.anaphoric [*]])
 
 (defn zip-digits [digits]
-  (list (zip digits (cut digits 1))))
+  (setv iters (tee digits))
+  (-> iters second next)
+  (zip #* iters))
   
 (defn adjacent-digits [zipped]
   (ap-reduce
@@ -20,7 +23,7 @@
 ;; Part One
 (-> (lfor
       guess (range 172851 675870)
-      :setv zipd (->> guess str (map int) list zip-digits)
+      :setv zipd (->> guess str (map int) zip-digits list) ; explode zipd here as used twice
       :if (and (adjacent-digits zipd) (not-decreasing zipd))
       guess)
     len
@@ -29,7 +32,7 @@
 ;; Part Two
 (-> (lfor
       guess (range 172851 675870)
-      :setv d (->> guess str (map int) list)
+      :setv d (->> guess str (map int) list) ; explode d here as used twice
       :if (and (adjacent-isolated-digits d) (-> d zip-digits not-decreasing))
       guess)
     len
