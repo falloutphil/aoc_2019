@@ -3,13 +3,13 @@
 (import [collections [Counter]])
 (require [hy.extra.anaphoric [*]])
 
-(defn zip-digits [digits]
-  (zip digits (cut digits 1)))
-  
+;; Faster than (> (-> digits Counter .values set max) 1)
 (defn adjacent-digits [zipped]
   (ap-reduce
     (or (= (first it) (second it)) acc) zipped False))
 
+;; Because we never decrease if we have
+;; a count of 2 they must be together
 (defn adjacent-isolated-digits [digits]
   (in 2 (-> digits Counter .values set)))
 
@@ -20,7 +20,7 @@
 ;; Part One
 (-> (lfor
       guess (range 172851 675870)
-      :setv zipd (-> guess str zip-digits list) ; explode zipd here as used twice
+      :setv zipd (-> guess str (partition 2 1) list) ; explode zipd here as used twice
       :if (and (adjacent-digits zipd) (not-decreasing zipd))
       guess)
     len
@@ -29,8 +29,8 @@
 ;; Part Two
 (-> (lfor
       guess (range 172851 675870)
-      :setv d (str guess) ; explode d here as used twice
-      :if (and (adjacent-isolated-digits d) (-> d zip-digits not-decreasing))
+      :setv d (str guess)
+      :if (and (adjacent-isolated-digits d) (-> d (partition 2 1) not-decreasing))
       guess)
     len
     print)
