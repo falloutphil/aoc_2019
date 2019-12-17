@@ -35,8 +35,8 @@
 ;; Part Two
 (for [pair (it.permutations (range 100) 2)]
   (setv program (.copy reset-program))
-  (setv noun (get pair 0))
-  (setv verb (get pair 1))
+  (setv noun (first pair))
+  (setv verb (second pair))
   (assoc program 1 noun)
   (assoc program 2 verb)
   (consume-program program)
