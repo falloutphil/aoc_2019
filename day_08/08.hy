@@ -1,11 +1,9 @@
 #!/usr/bin/env hy
-;; -*- coding: utf-8 -*-
 
 (import [collections [Counter]])
 (import [functools [partial]])
 (require [hy.extra.anaphoric [*]])
 (require [hy.contrib.walk [*]])
-(import [hy.contrib.walk [walk]])
 
 ;; Image is 25x6
 ;; So each layer is 25x6 digits wide
@@ -26,9 +24,11 @@
 ;; 1 = white ░
 ;; 2 = transparent
 (let [zl (zip #* layers)
-      il (ap-map (->> it (drop-while (partial = "2")) first) zl)]
+      combined-layer (ap-map
+                       (first (drop-while (partial = "2") it))
+                       zl)]
   ;; Part 2
-  (ap-each (partition il width)
+  (ap-each (partition combined-layer width)
            (as-> it row
                  (.join "" row)
                  (.replace row "1" "█")
