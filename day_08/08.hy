@@ -1,4 +1,5 @@
 #!/usr/bin/env hy
+;; -*- coding: utf-8 -*-
 
 (import [collections [Counter]])
 (require [hy.extra.anaphoric [*]])
@@ -9,10 +10,7 @@
 (setv height 6)
 (setv layer (* width height))
 
-; 2, 0, 2, 2, 0, 1, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 2, 0, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 1, 
 (setv image (map int (-> "input.txt" open .read (.rstrip "\n\r"))))
-;(print (list image))
-
 
 ;; fewest 0 digits
 (setv layers (list (partition image layer layer)))
@@ -21,4 +19,16 @@
 (setv uncorrupted-layer-index (.index counts (min counts)))
 (setv uncorrupted-counts (Counter (get layers uncorrupted-layer-index)))
 
+;; Part 1
 (print (* (get uncorrupted-counts 1) (get uncorrupted-counts 2)))
+
+;; stack layers
+;; 0 = black █
+;; 1 = white ░
+;; 2 = transparent
+(setv zl (zip #* layers))
+(setv il (ap-map (->> it (drop-while (fn [digit] (= digit 2))) first) zl))
+
+;; Part 2
+(ap-each (partition il 25 25)
+         ((fn [s] (-> s (.replace "1" "█") print))  (.join "" (map str it))))
