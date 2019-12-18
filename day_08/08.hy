@@ -4,6 +4,7 @@
 (import [collections [Counter]])
 (require [hy.extra.anaphoric [*]])
 (require [hy.contrib.walk [*]])
+(import [hy.contrib.walk [walk]])
 
 ;; Image is 25x6
 ;; So each layer is 25x6 digits wide
@@ -26,4 +27,4 @@
       il (ap-map (->> it (drop-while (fn [digit] (= digit "2"))) first) zl)]
   ;; Part 2
   (ap-each (partition il 25 25)
-           ((fn [s] (-> s (.replace "1" "█") print))  (.join "" it))))
+           (as-> it row (.join "" row) (.replace row "1" "█") (print row))))
