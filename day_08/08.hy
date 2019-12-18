@@ -27,4 +27,8 @@
       il (ap-map (->> it (drop-while (fn [digit] (= digit "2"))) first) zl)]
   ;; Part 2
   (ap-each (partition il 25 25)
-           (as-> it row (.join "" row) (.replace row "1" "█") (print row))))
+           (as-> it row
+                 (.join "" row)
+                 (.replace row "1" "█")
+                 (.replace row "0" "░")
+                 (print row))))
