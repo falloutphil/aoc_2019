@@ -1,7 +1,6 @@
 #!/usr/bin/env hy
 
 (import [collections [Counter]])
-(import [functools [partial]])
 (require [hy.extra.anaphoric [*]])
 (require [hy.contrib.walk [*]])
 
@@ -17,16 +16,16 @@
       uncorrupted-layer-index (.index counts (min counts))
       uncorrupted-counts (Counter (get layers uncorrupted-layer-index))]
   ;; Part 1
-  (print (* (get uncorrupted-counts "1") (get uncorrupted-counts "2"))))
+  (print (* (get uncorrupted-counts "1")
+            (get uncorrupted-counts "2"))))
 
 ;; stack layers
 ;; 0 = black █
 ;; 1 = white ░
 ;; 2 = transparent
 (let [zl (zip #* layers)
-      combined-layer (ap-map
-                       (first (drop-while (partial = "2") it))
-                       zl)]
+      combined-layer (ap-map (ap-first (!= it "2") it) zl)]
+  
   ;; Part 2
   (ap-each (partition combined-layer width)
            (as-> it row
