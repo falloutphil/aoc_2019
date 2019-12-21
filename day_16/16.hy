@@ -12,7 +12,6 @@
 (require [hy.contrib.walk [*]])
 (import [hy.contrib.walk [walk]])
 (require [hy.extra.anaphoric [*]])
-(require [hy.contrib.loop [loop]])
 
 (defseq pattern [n]
   (let [np1 (inc n)]
@@ -20,11 +19,13 @@
 
 (setv input (->> "12345678" (map int) list))
 
-(loop [[phases 4]]
-      (if-not (zero? phases)
-        (ap-each (range (len input))
-            (-> (ap-map
-                  (* #*it)
-                  (zip input (->> it (nth pattern) cycle rest)))
-                sum str (cut -1) (print :end "")))
-        (recur (dec phases))))
+(setv phases 4)
+(while phases
+  (print phases (.join "" (map str input)))
+  (setv input (list (ap-map ; over length of signal
+    (-> (ap-map ; for each digit zip pattern and input signal and multiply
+          (* #*it)
+          (zip input (->> it (nth pattern) cycle rest)))
+        sum str (cut -1) int)
+    (range (len input)))))
+  (setv phases (dec phases)))
