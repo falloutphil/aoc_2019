@@ -17,9 +17,10 @@
   (let [np1 (inc n)]
     (-> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)] flatten)))
 
-(setv input (->> "12345678" (map int) list))
+;;(setv input (->> "80871224585914546619083218645595" (map int) list))
+(setv input (list (map int (-> "input.txt" open .read (.rstrip "\n\r")))))
 
-(setv phases 4)
+(setv phases 101)
 (while phases
   (print phases (.join "" (map str input)))
   (setv input (list (ap-map ; over length of signal
