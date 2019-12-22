@@ -19,18 +19,16 @@
 
 (defn decode-signal [text-input repeat offset]
   (print "Offset:" offset)
-  (setv phases 100)
   (setv input (->>  text-input (map int) cycle (take (* repeat (len text-input))) list))
-  (while phases
-    (print "Phase:" phases "Value:" (.join "" (map str (cut input offset (+ 8 offset)))))
+  (for [phase (range 100)]
+    (print "Phase:" phase "Value:" (.join "" (map str (cut input offset (+ 8 offset)))))
     (setv input (list (ap-map ; over length of signal
                         (-> (ap-map ; for each digit zip pattern and input signal and multiply
                               (* #*it)
                               (zip input (->> it (nth pattern) cycle rest)))
                             sum str (cut -1) int)
-                        (range (len input)))))
-    (setv phases (dec phases)))
-  (print phases (.join "" (map str (cut input offset 8)))))
+                        (range (len input))))))
+  (print (.join "" (map str (cut input offset 8)))))
 
   
 
