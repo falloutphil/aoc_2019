@@ -10,23 +10,35 @@
 (require [hy.contrib.sequences [defseq seq]])
 (import [hy.contrib.sequences [Sequence end-sequence]])
 (require [hy.contrib.walk [*]])
-(import [hy.contrib.walk [walk]])
 (require [hy.extra.anaphoric [*]])
 
 (defseq pattern [n]
   (let [np1 (inc n)]
     (-> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)] flatten)))
 
-;;(setv input (->> "80871224585914546619083218645595" (map int) list))
-(setv input (list (map int (-> "input.txt" open .read (.rstrip "\n\r")))))
 
-(setv phases 101)
-(while phases
-  (print phases (.join "" (map str input)))
-  (setv input (list (ap-map ; over length of signal
-    (-> (ap-map ; for each digit zip pattern and input signal and multiply
-          (* #*it)
-          (zip input (->> it (nth pattern) cycle rest)))
-        sum str (cut -1) int)
-    (range (len input)))))
-  (setv phases (dec phases)))
+(defn decode-signal [text-input repeat offset]
+  (print "Offset:" offset)
+  (setv phases 100)
+  (setv input (->>  text-input (map int) cycle (take (* repeat (len text-input))) list))
+  (while phases
+    (print "Phase:" phases "Value:" (.join "" (map str (cut input offset (+ 8 offset)))))
+    (setv input (list (ap-map ; over length of signal
+                        (-> (ap-map ; for each digit zip pattern and input signal and multiply
+                              (* #*it)
+                              (zip input (->> it (nth pattern) cycle rest)))
+                            sum str (cut -1) int)
+                        (range (len input)))))
+    (setv phases (dec phases)))
+  (print phases (.join "" (map str (cut input offset 8)))))
+
+  
+
+; basic example part 1
+(decode-signal "80871224585914546619083218645595" 1 0)
+;; part1 proper
+(decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 1 0)
+
+;; basic example part 2 - resource hungry/not working
+(let [ti "03036732577212944063491565474664"]
+  (decode-signal ti 10000 (-> ti (cut 0 7) int)))
