@@ -15,7 +15,7 @@
 
 (defseq pattern [n]
   (let [np1 (inc n)]
-    (-> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)] flatten)))
+    (flatten [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)])))
 
 
 (defn decode-signal [text-input repeat offset]
