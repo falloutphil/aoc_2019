@@ -11,6 +11,7 @@
 (import [hy.contrib.sequences [Sequence end-sequence]])
 (require [hy.contrib.walk [*]])
 (require [hy.extra.anaphoric [*]])
+(require [hy.contrib.loop [loop]])
 
 (defseq pattern [n]
   (let [np1 (inc n)]
@@ -19,18 +20,20 @@
 
 (defn decode-signal [text-input repeat offset]
   (print "Offset:" offset)
-  (setv input (->>  text-input (map int) cycle (take (* repeat (len text-input))) list))
-  (for [phase (range 100)]
-    (print "Phase:" phase "Value:" (.join "" (map str (cut input offset (+ 8 offset)))))
-    (setv input (list (ap-map ; over length of signal
-                        (-> (ap-map ; for each digit zip pattern and input signal and multiply
-                              (* #*it)
-                              (zip input (->> it (nth pattern) cycle rest)))
-                            sum str (cut -1) int)
-                        (range (len input))))))
-  (print (.join "" (map str (cut input offset 8)))))
-
-  
+  (loop [[phase 100]
+         [input (->> text-input (map int) cycle (take (* repeat (len text-input))) list)]]
+        (print "Phase:" phase "Value:" (.join "" (map str (cut input offset (+ 8 offset)))))
+        (if (zero? phase)
+            input
+            (recur
+              (dec phase)
+              (list (ap-map ; over length of signal
+                      (-> (ap-map ; for each digit zip pattern and input signal and multiply
+                            (* #*it)
+                            (zip input (->> it (nth pattern) cycle rest)))
+                          sum str (cut -1) int)
+                      (range (len input))))))))
+    
 
 ; basic example part 1
 (decode-signal "80871224585914546619083218645595" 1 0)
