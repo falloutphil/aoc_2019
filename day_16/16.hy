@@ -12,10 +12,17 @@
 (require [hy.contrib.walk [*]])
 (require [hy.extra.anaphoric [*]])
 (require [hy.contrib.loop [loop]])
+(import [numpy :as np])
 
 (defseq pattern [n]
   (let [np1 (inc n)]
     (flatten [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)])))
+
+(defn generate-pattern [length]
+  (->> (seq [n]
+    (let [np1 (inc n)]
+      (->> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)]
+           flatten cycle rest (take length) list))) (take length) list (.array np)))
 
 
 (defn decode-signal [text-input repeat offset]
@@ -35,11 +42,21 @@
                       (range (len input))))))))
     
 
+
+; create matrix for 8x8
+(setv input (.array np [1 2 3 4 5 6 7 8]))
+(setv matrix (generate-pattern 8))
+
+(print input)
+(print matrix)
+
+(print (.join "" (ap-map (-> it str (cut -1)) (.matmul np matrix input))))
+
 ; basic example part 1
-(decode-signal "80871224585914546619083218645595" 1 0)
+;(decode-signal "80871224585914546619083218645595" 1 0)
 ;; part1 proper
-(decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 1 0)
+;(decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 1 0)
 
 ;; basic example part 2 - resource hungry/not working
-(let [ti "03036732577212944063491565474664"]
-  (decode-signal ti 10000 (-> ti (cut 0 7) int)))
+;(let [ti "03036732577212944063491565474664"]
+;  (decode-signal ti 10000 (-> ti (cut 0 7) int)))
