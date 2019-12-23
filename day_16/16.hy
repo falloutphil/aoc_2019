@@ -14,16 +14,16 @@
 (require [hy.contrib.loop [loop]])
 (import [numpy :as np])
 
-(defn generate-pattern [length repeat]
+(defn generate-pattern [length]
   (->> (seq [n]
     (let [np1 (inc n)]
       (->> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)]
-           flatten cycle rest (take (* length repeat)) list))) ; define each row of seq
-       (take (* length repeat)) list (.array np))) ; take 'length' rows from seq to form square matrix
+           flatten cycle rest (take length) list))) ; define each row of seq
+       (take length) list (.array np))) ; take 'length' rows from seq to form square matrix
 
-(defn decode-signal [text-input repeat offset]
+(defn decode-signal [text-input offset]
   (print "Offset:" offset)
-  (let [matrix (generate-pattern (len text-input) repeat)]
+  (let [matrix (generate-pattern (len text-input))]
     (print "Matrix:\n" matrix)
     (loop [[phase 100]
            [input (->> text-input (map int) list (.array np))]]
@@ -36,10 +36,11 @@
 
 
 ;; basic example part 1
-(print (decode-signal "80871224585914546619083218645595" 1 0))
+(print (decode-signal "80871224585914546619083218645595" 0))
 ;; part1 proper
-(print (decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 1 0))
+(print (decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 0))
 
 ;; basic example part 2 - resource hungry/not working
-(comment (let [ti "03036732577212944063491565474664"]
-  (print (decode-signal ti 10000 (-> ti (cut 0 7) int)))))
+(#_comment (let [text "03036732577212944063491565474664"
+                 cycle-text (->> text cycle (take (* 10000 (len text))) list)]
+  (print (decode-signal cycle-text (-> text (cut 0 7) int)))))
