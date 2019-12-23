@@ -31,7 +31,7 @@
                       (-> (ap-map ; for each digit zip pattern and input signal and multiply
                             (* #*it)
                             (zip input (->> it (nth pattern) cycle rest)))
-                          sum str (cut -1) int)
+                          sum abs (% 10))
                       (range (len input))))))))
     
 
