@@ -22,8 +22,8 @@
   (->> (seq [n]
     (let [np1 (inc n)]
       (->> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)]
-           flatten cycle rest (take length) list))) (take length) list (.array np)))
-
+           flatten cycle rest (take length) list))) ; define each row of seq
+       (take length) list (.array np))) ; take 'length' rows from seq to form square matrix
 
 (defn decode-signal [text-input repeat offset]
   (print "Offset:" offset)
@@ -43,14 +43,29 @@
     
 
 
-; create matrix for 8x8
-(setv input (.array np [1 2 3 4 5 6 7 8]))
-(setv matrix (generate-pattern 8))
+(defn decode-signal2 [text-input offset]
+  (print "Offset:" offset)
+  (let [matrix (generate-pattern (len text-input))]
+    (print "Matrix:\n" matrix)
+    (loop [[phase 100]
+           [input (->> text-input (map int) list (.array np))]]
+          (print "Phase:" phase)
+          (if (zero? phase)
+              (.join "" (->> input (ap-map (-> it str (cut -1))) (take 8)))
+              (recur
+                (dec phase)
+                (list (ap-map (-> it abs (% 10)) (.matmul np matrix input))))))))
+         
 
-(print input)
-(print matrix)
 
-(print (.join "" (ap-map (-> it str (cut -1)) (.matmul np matrix input))))
+;; basic example part 1
+(print (decode-signal2 "80871224585914546619083218645595" 0))
+;; part1 proper
+(print (decode-signal2 (-> "input.txt" open .read (.rstrip "\n\r")) 0))
+
+;; basic example part 2 - resource hungry/not working
+(let [ti "03036732577212944063491565474664"]
+  (print (decode-signal2 ti (-> ti (cut 0 7) int))))
 
 ; basic example part 1
 ;(decode-signal "80871224585914546619083218645595" 1 0)
