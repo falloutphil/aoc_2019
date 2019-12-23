@@ -41,5 +41,5 @@
 (print (decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 1 0))
 
 ;; basic example part 2 - resource hungry/not working
-;(let [ti "03036732577212944063491565474664"]
-;  (print (decode-signal2 ti 10000 (-> ti (cut 0 7) int))))
+(comment (let [ti "03036732577212944063491565474664"]
+  (print (decode-signal ti 10000 (-> ti (cut 0 7) int)))))
