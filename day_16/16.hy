@@ -38,7 +38,7 @@
 ;; basic example part 1
 (print (decode-signal "80871224585914546619083218645595" 0))
 ;; part1 proper
-(print (decode-signal (-> "input.txt" open .read (.rstrip "\n\r")) 0))
+(print (decode-signal (-> "input.txt" open .read .rstrip) 0))
 
 ;; basic example part 2 - resource hungry/not working
 (#_comment (let [text "03036732577212944063491565474664"
