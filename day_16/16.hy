@@ -23,14 +23,12 @@
        (take length))) ; take 'length' rows from seq to form square matrix
 
 (defn decode-signal [text-input offset]
-  (print "Offset:" offset)
   (let [matrix (vstack (generate-pattern (len text-input)))]
-    ;(print "Matrix:\n" (.toarray matrix))
     (loop [[phase 100]
            [input (->> text-input (map int) list)]]
-          (print "Phase:" phase)
+          (print "Phase:" phase "Input:" (.join "" (map str (take 16 input))))
           (if (zero? phase)
-              (.join "" (->> input (ap-map (-> it str (cut -1))) (take 8)))
+              (.join "" (map str (take 16 input)))
               (recur
                 (dec phase)
                 (list (ap-map (-> it abs (% 10)) (.dot matrix input))))))))
@@ -42,9 +40,15 @@
 (print (decode-signal (-> "input.txt" open .read .rstrip) 0))
 
 ;; basic example part 2 - resource hungry/not working
-(comment (let [text "03036732577212944063491565474664"
-      cycle-text (->> text cycle (take (* 10000 (len text))) list)]
-  (print (decode-signal cycle-text (-> text (cut 0 7) int)))))
+(let [text "03036732577212944063491565474664"
+      offset (-> text (cut 0 7) int)
+      cycle-text (->> text cycle (take (* 10000 (len text))) list) 
+      midpoint (// (len cycle-text) 2)
+      filtered-text (cut cycle-text offset)]
+  (print "Midpoint: " midpoint)
+  (print "Offset:" offset)
+  (assert (>= offset midpoint))
+  (print (decode-signal filtered-text offset)))
 
 ;; input needs to be larger than the sample to see benefit of using sparse matrix
 ;; But with input repeated 6 times for example we see big memory savings, with
@@ -60,5 +64,5 @@
 ;; as the pattern matrix is just too large.
 
 ;; Example profiling
-(setv mem (memory-usage (, decode-signal (, (-> "input.txt" open .read .rstrip) 0))))
-(print (max mem))
+;(setv mem (memory-usage (, decode-signal (, (-> "input.txt" open .read .rstrip) 0))))
+;(print (max mem))
