@@ -16,39 +16,42 @@
 (import [memory-profiler [memory-usage]])
 
 (defn generate-pattern [length]
+  (print "Length:" length)
   (->> (seq [n]
-    (let [np1 (inc n)]
-      (->> [(* [0] np1) (* [1] np1) (* [0] np1) (* [-1] np1)]
-           flatten cycle rest (take length) list csr_matrix))) ; define each row of seq
-       (take length))) ; take 'length' rows from seq to form square matrix
+            (->> [(* [0] n) (* [1] (- length n))]
+                 flatten (take length) list csr_matrix)) ; define each row of seq
+       (take length) vstack)) ; take 'length' rows from seq to form square matrix
 
-(defn decode-signal [text-input offset]
-  (let [matrix (vstack (generate-pattern (len text-input)))]
+(defn decode-signal [text-input]
+  ;(print text-input)
+  (let [matrix (generate-pattern (len text-input))]
+    ;(print (.toarray matrix))
     (loop [[phase 100]
            [input (->> text-input (map int) list)]]
-          (print "Phase:" phase "Input:" (.join "" (map str (take 16 input))))
+          (print "Phase:" phase "Input:" (.join "" (map str (take 8 input))))
           (if (zero? phase)
-              (.join "" (map str (take 16 input)))
+              (.join "" (map str (take 8 input)))
               (recur
                 (dec phase)
-                (list (ap-map (-> it abs (% 10)) (.dot matrix input))))))))
+                (list (ap-map (-> it (% 10)) (.dot matrix input))))))))
 
 
 ;; basic example part 1
-(print (decode-signal "80871224585914546619083218645595" 0))
+;(print (decode-signal "80871224585914546619083218645595" 0))
 ;; part1 proper
-(print (decode-signal (-> "input.txt" open .read .rstrip) 0))
+                                ;
+;(print (decode-signal (-> "input.txt" open .read .rstrip) 0))
 
 ;; basic example part 2 - resource hungry/not working
 (let [text "03036732577212944063491565474664"
       offset (-> text (cut 0 7) int)
-      cycle-text (->> text cycle (take (* 10000 (len text))) list) 
+      cycle-text (* text 10000) 
       midpoint (// (len cycle-text) 2)
       filtered-text (cut cycle-text offset)]
   (print "Midpoint: " midpoint)
   (print "Offset:" offset)
   (assert (>= offset midpoint))
-  (print (decode-signal filtered-text offset)))
+  (print (decode-signal filtered-text)))
 
 ;; input needs to be larger than the sample to see benefit of using sparse matrix
 ;; But with input repeated 6 times for example we see big memory savings, with
