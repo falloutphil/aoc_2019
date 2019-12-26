@@ -12,7 +12,8 @@
 (require [hy.contrib.walk [*]])
 (require [hy.extra.anaphoric [*]])
 (require [hy.contrib.loop [loop]])
-(import [scipy.sparse [csr_matrix vstack]])
+(import [scipy.sparse [csr_matrix coo_matrix vstack triu]])
+(import [numpy :as np])
 (import [memory-profiler [memory-usage]])
 
 (defn generate-pattern [length]
@@ -22,9 +23,17 @@
                  flatten (take length) list csr_matrix)) ; define each row of seq
        (take length) vstack)) ; take 'length' rows from seq to form square matrix
 
+(defn generate-sparse-pattern [length]
+  (print "Length:" length)
+  (let [ones (.ones np (, length length) :dtype np.int8)
+        matrix (csr_matrix ones)]
+    (triu matrix)))
+
+
+
 (defn decode-signal [text-input]
   ;(print text-input)
-  (let [matrix (generate-pattern (len text-input))]
+  (let [matrix (generate-sparse-pattern (len text-input))]
     ;(print (.toarray matrix))
     (loop [[phase 100]
            [input (->> text-input (map int) list)]]
