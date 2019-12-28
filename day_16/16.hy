@@ -19,8 +19,8 @@
   (print "Length:" length)
   (->> (seq [n]
             (->> [(* [0] n) (* [1] (- length n))]
-                 flatten (take length) list (.array np :dtype np.int8))) ; define each row of seq
-       (take length) list (.array np :dtype np.int8))) ; take 'length' rows from seq to form square matrix
+                 flatten (take length) list (.array np :dtype np.uint32))) ; define each row of seq
+       (take length) list (.array np :dtype np.uint32))) ; take 'length' rows from seq to form square matrix
 
 ;; bool type means no copy peak memory
 ;; is limited to length^2 bytes
@@ -30,7 +30,7 @@
 
 
 (defn decode-signal [text-input]
-  (let [matrix (generate-pattern (len text-input))]
+  (let [matrix (generate-pattern-1 (len text-input))]
     (loop [[phase 100]
            ;; Has to be int32 as matrix calc before taking units can produce large numbers
            ;; The largest possible number of multiplying
@@ -65,7 +65,9 @@
   (print "Midpoint: " midpoint)
   (print "Offset:" offset)
   (assert (>= offset midpoint))
-  (print (decode-signal filtered-text)))
+  ;(print (decode-signal filtered-text))))
+  (setv mem (memory-usage (, decode-signal (, filtered-text))))
+  (print (max mem)))
 
 ;(print (generate-pattern-1 4))
 ;(print (generate-pattern 4))
