@@ -29,9 +29,11 @@
 
 ;; Works for part 2 only where the offset
 ;; requested is beyond the midpoint of
-;; the input sequence.
-;; bool type means no copy peak memory
-;; is limited to length^2 bytes
+;; the input sequence.  The resulting sequence
+;; is just a triangle matrix which numpy can
+;; handle straightforwardly.
+;; bool type means no copy is done - peak memory
+;; is then limited to length^2 bytes
 (defn generate-pattern-offset [length]
   (print "Length:" length)
   ;; Has to be int32 as matrix calc before taking units can produce large numbers
