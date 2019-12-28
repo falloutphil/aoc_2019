@@ -32,7 +32,14 @@
 (defn decode-signal [text-input]
   (let [matrix (generate-pattern (len text-input))]
     (loop [[phase 100]
-           [input (->> text-input (map int) list (.array np))]]
+           ;; Has to be int32 as matrix calc before taking units can produce large numbers
+           ;; The largest possible number of multiplying
+           ;; a matrix via a vector where all vector elements are units and all matrix
+           ;; elements are either 0 or 1 should be max(matrix)*max(vector)*length(vector)
+           ;; i.e. 1*9*16327 for the example, giving only 146,943.
+           ;; The largest uint16 is 65,635, the largest uint32 is 4,294,967,295
+           ;; For the real problem we have 1*9*522659 = 4,703,931 
+           [input (->> text-input (map np.uint32) list (.array np))]]
           (print "Phase:" phase "Input:" (cut input 0 8))
           (if (zero? phase)
               (.join "" (map str (cut input 0 8)))
