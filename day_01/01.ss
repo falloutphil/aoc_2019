@@ -29,15 +29,15 @@
               [else
                (loop (read-line p) (cons row results) (sub1 iter))])))))
 
+(define (read-txt path)
+  (preview-txt path +inf.0))
+
 (define-syntax compose
   (lambda (x)
     (syntax-case x ()
       ((_) #'(lambda (y) y))
       ((_ f) #'f)
       ((_ f g h ...)  #'(lambda (y) (f ((compose g h ...) y)))))))
-
-(define (read-txt path)
-  (preview-txt path +inf.0))
 
 (define (quotient-3 x)
   (quotient x 3))
