@@ -1,8 +1,7 @@
-#!/usr/bin/scheme --script 
+#!/usr/bin/scheme --script
 
 ;; https://www.travishinkelman.com/post/reading-writing-csv-files-chez-scheme/
 
-(import (rnrs))
 (define read-line
   (lambda port
           (define (eat p c)
