@@ -29,6 +29,13 @@
               [else
                (loop (read-line p) (cons row results) (sub1 iter))])))))
 
+(define-syntax compose
+  (lambda (x)
+    (syntax-case x ()
+      ((_) #'(lambda (y) y))
+      ((_ f) #'f)
+      ((_ f g h ...)  #'(lambda (y) (f ((compose g h ...) y)))))))
+
 (define (read-txt path)
   (preview-txt path +inf.0))
 
@@ -43,5 +50,5 @@
    0
    (+ (car l) (sum (cdr l)))))
 
-(display (sum (map (lambda (x) (minus-2 (quotient-3 (string->number x)))) (read-txt "input.txt"))))
+(display (sum (map (compose minus-2 quotient-3 string->number) (read-txt "input.txt"))))
 (newline)
