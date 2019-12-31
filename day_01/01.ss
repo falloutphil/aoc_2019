@@ -13,10 +13,5 @@
 (define (minus-2 x)
   (- x 2))
 
-(define (sum l)
-  (if (null? l)
-   0
-   (+ (car l) (sum (cdr l)))))
-
 (display (sum (map (compose minus-2 quotient-3 string->number) (read-txt "input.txt"))))
 (newline)
