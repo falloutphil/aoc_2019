@@ -1,17 +1,18 @@
 #!/usr/bin/scheme-script
-;; -*- compile-command: "CHEZSCHEMELIBDIRS=.. ./01.ss" -*-
+;; -*- compile-command: "CHEZSCHEMELIBDIRS=..:../../thunderchez: ./01.ss" -*-
 
-(import (chezscheme) (aoc-utils))
+(import (chezscheme)
+        (srfi s26 cut)
+        (aoc-utils))
 
 ;; Hint:
 ;; CHEZSCHEMELIBDIRS=.. ./01.ss
 ;; scheme --libdirs .. --program 01.ss
 
-(define (quotient-3 x)
-  (quotient x 3))
-
-(define (minus-2 x)
-  (- x 2))
-
-(display (fold-left + 0 (map (compose minus-2 quotient-3 string->number) (read-file "input.txt"))))
+(display
+ (fold-left + 0
+            (map (compose (cut - <> 2)
+                          (cut quotient <> 3)
+                          string->number)
+                 (read-file "input.txt"))))
 (newline)
