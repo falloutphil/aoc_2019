@@ -13,5 +13,5 @@
 (define (minus-2 x)
   (- x 2))
 
-(display (sum (map (compose minus-2 quotient-3 string->number) (read-file "input.txt"))))
+(display (fold-left + 0 (map (compose minus-2 quotient-3 string->number) (read-file "input.txt"))))
 (newline)

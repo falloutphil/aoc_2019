@@ -1,5 +1,5 @@
 (library (aoc-utils)
-  (export read-file compose sum in)
+  (export read-file compose in)
   (import (chezscheme))
 
   (define in)
@@ -26,9 +26,4 @@
       (syntax-case x ()
         ((_) #'(lambda (y) y))
         ((_ f) #'f)
-        ((_ f g h ...)  #'(lambda (y) (f ((compose g h ...) y)))))))
-
-  (define (sum l)
-    (if (null? l)
-        0
-        (+ (car l) (sum (cdr l))))))
+        ((_ f g h ...)  #'(lambda (y) (f ((compose g h ...) y))))))))
