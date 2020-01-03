@@ -23,7 +23,7 @@
 
 ;; Part 2
 (define extra-fuel
-  (lambda (mass previous)
+  (lambda (previous mass)
     (let ([acc 0])
       (define extra-fuel-accumulator
         (lambda (m)
@@ -34,4 +34,4 @@
                        (extra-fuel-accumulator extra))))))
       (+ previous (extra-fuel-accumulator mass)))))
 
-(display (fold-right extra-fuel total-mass mass-list))
+(display (fold-left extra-fuel total-mass mass-list))
