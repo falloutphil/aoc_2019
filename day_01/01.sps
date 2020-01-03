@@ -35,3 +35,4 @@
       (+ previous (extra-fuel-accumulator mass)))))
 
 (display (fold-left extra-fuel total-mass mass-list))
+(newline)
