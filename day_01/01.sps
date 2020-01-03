@@ -9,11 +9,29 @@
 ;; CHEZSCHEMELIBDIRS=.. ./01.ss
 ;; scheme --libdirs .. --program 01.ss
 
+(define mass-list
+  (map (compose (cut - <> 2)
+                (cut quotient <> 3)
+                string->number)
+       (read-file "input.txt")))
+
 ;; Part 1
-(display
- (fold-left + 0
-            (map (compose (cut - <> 2)
-                          (cut quotient <> 3)
-                          string->number)
-                 (read-file "input.txt"))))
+(define total-mass
+ (fold-left + 0 mass-list))
+(display total-mass)
 (newline)
+
+;; Part 2
+(define make-extra-fuel
+  (lambda (mass previous)
+    (let ([acc 0])
+      (define extra-fuel
+        (lambda (m)
+          (let ([extra (- (quotient m 3) 2)])
+            (if (< extra 0)
+                acc
+                (begin (set! acc (+ acc extra))
+                       (extra-fuel extra))))))
+      (+ previous (extra-fuel mass)))))
+
+(display (fold-right make-extra-fuel total-mass mass-list))
