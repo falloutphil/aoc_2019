@@ -18,7 +18,7 @@
                      (char<=? (car pair) (cdr pair))) zipd)))))
 
 ; Part 01
-(display (count (lambda (x) x)
+(display (count values
                 (stream->list (stream-unfold
                                check-each-number ; map
                                (cute < <> 675870) ; pred?
