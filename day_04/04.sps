@@ -11,9 +11,14 @@
   (lambda (n)
     (let* ([str-list (string->list (number->string n))]
            [zipd (map cons (drop-right str-list 1) (cdr str-list))])
-      (display zipd))))
+      (and (ormap (lambda (pair)
+                    (char=? (car pair) (cdr pair))) zipd)
+           (andmap (lambda (pair)
+                    (let ([current (char->integer (car pair))]
+                          [next (char->integer (cdr pair))])
+                      (<= current next))) zipd)))))
 
-(display (check-each-number 12345))
+(display (check-each-number 123445))
 ;(let* ([guess (stream-map number->string (stream-from 172851))]
 ;       [zipd (stream-map stream-cons guess (stream-drop 1 guess))])
 ;  (display zipd))
