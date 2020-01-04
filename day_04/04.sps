@@ -1,9 +1,10 @@
 #!/usr/bin/scheme-script
-;; -*- compile-command: "CHEZSCHEMELIBDIRS=..:../..: ./04.sps" -*-
+;; -*- compile-command: "time CHEZSCHEMELIBDIRS=..:../..: ./04.sps" -*-
 ;; Assumes you've softlinked chez-srfi to srfi and ran link-dirs.chezscheme.sps
 ;; Should also work with thunderchez replacing : with s
 
 (import (chezscheme)
+        (srfi :26 cut)
         (srfi :41 streams)
         (only (srfi :1 lists) drop-right count))
 
@@ -20,7 +21,7 @@
 (display (count (lambda (x) x)
                 (stream->list (stream-unfold
                                check-each-number ; map
-                               (lambda (x) (< x 675870)) ; pred?
-                               (lambda (x) (+ x 1)) ; gen
+                               (cute < <> 675870) ; pred?
+                               add1 ; gen
                                172851)))) ; base
 (newline)
