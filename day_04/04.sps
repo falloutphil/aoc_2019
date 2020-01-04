@@ -5,7 +5,7 @@
 
 (import (chezscheme)
         (srfi :41 streams)
-        (only (srfi :1 lists) drop-right))
+        (only (srfi :1 lists) drop-right count))
 
 (define check-each-number
   (lambda (n)
@@ -14,11 +14,13 @@
       (and (ormap (lambda (pair)
                     (char=? (car pair) (cdr pair))) zipd)
            (andmap (lambda (pair)
-                    (let ([current (char->integer (car pair))]
-                          [next (char->integer (cdr pair))])
-                      (<= current next))) zipd)))))
+                     (char<=? (car pair) (cdr pair))) zipd)))))
 
-(display (check-each-number 123445))
-;(let* ([guess (stream-map number->string (stream-from 172851))]
-;       [zipd (stream-map stream-cons guess (stream-drop 1 guess))])
-;  (display zipd))
+; Part 01
+(display (count (lambda (x) x)
+                (stream->list (stream-unfold
+                               check-each-number ; map
+                               (lambda (x) (< x 675870)) ; pred?
+                               (lambda (x) (+ x 1)) ; gen
+                               172851)))) ; base
+(newline)
