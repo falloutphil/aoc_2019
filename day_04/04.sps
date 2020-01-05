@@ -5,21 +5,16 @@
 
 (import (chezscheme)
         (srfi :26 cut)
-        (srfi :41 streams)
-        (only (srfi :1 lists) count zip))
+        (prefix (srfi :1 lists) srfi-))
 
 (define check-each-number
   (lambda (n)
     (let* ([str-list (string->list (number->string n))]
-           [zipd (zip str-list (cdr str-list))])
-      (and (ormap (cut apply char=? <>) zipd)
+           [zipd (srfi-zip str-list (cdr str-list))])
+      (and (ormap (cut apply char=? <>) zipd) ; apply x y to pass list of args y to proc x
            (andmap (cut apply char<=? <>) zipd)))))
 
-; Part 01
-(display (count values
-                (stream->list (stream-unfold
-                               check-each-number ; map
-                               (cut < <> 675870) ; pred?
-                               add1 ; gen
-                               172851)))) ; base
+;; Part 01
+(let ([start 172851])
+  (display (srfi-count check-each-number (srfi-iota (- 675870 start) start))))
 (newline)
