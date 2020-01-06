@@ -1,13 +1,9 @@
 #!/usr/bin/scheme-script
-;; -*- compile-command: "CHEZSCHEMELIBDIRS=..:../../thunderchez: ./01.sps" -*-
+;; -*- compile-command: "CHEZSCHEMELIBDIRS=..:../..: ./01.sps" -*-
 
 (import (chezscheme)
-        (srfi s26 cut)
+        (srfi :26 cut)
         (aoc-utils))
-
-;; Hint:
-;; CHEZSCHEMELIBDIRS=.. ./01.ss
-;; scheme --libdirs .. --program 01.ss
 
 (define mass-list
   (map (compose (cut - <> 2)

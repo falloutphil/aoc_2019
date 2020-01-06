@@ -1,7 +1,5 @@
 #!/usr/bin/scheme-script
 ;; -*- compile-command: "time CHEZSCHEMELIBDIRS=..:../..: ./04.sps" -*-
-;; Assumes you've softlinked chez-srfi to srfi and ran link-dirs.chezscheme.sps
-;; Should also work with thunderchez replacing : with s
 
 (import (chezscheme)
         (srfi :26 cut)
