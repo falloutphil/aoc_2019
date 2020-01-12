@@ -18,17 +18,13 @@
 (newline)
 
 ;; Part 2
-(define extra-fuel
-  (lambda (previous mass)
-    (let ([acc 0])
-      (define extra-fuel-accumulator
-        (lambda (m)
-          (let ([extra (- (quotient m 3) 2)])
-            (if (< extra 0)
-                acc
-                (begin (set! acc (+ acc extra))
-                       (extra-fuel-accumulator extra))))))
-      (+ previous (extra-fuel-accumulator mass)))))
+(define (extra-fuel previous mass)
+  (+ previous
+     (let extra-fuel-accumulator ([m mass] [acc 0])
+       (let ([extra (- (quotient m 3) 2)])
+         (if (< extra 0)
+             acc
+             (extra-fuel-accumulator extra (+ acc extra)))))))
 
 (display (fold-left extra-fuel total-mass mass-list))
 (newline)
